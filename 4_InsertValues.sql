@@ -16,6 +16,7 @@ EXCEPTION
         dbms_output.put_line('Error inserting into production_co: ' || sqlerrm);
 END;
 /
+COMMIT;
 
 SELECT
     *
@@ -48,6 +49,7 @@ EXCEPTION
         dbms_output.put_line('Error inserting into tv_show: ' || sqlerrm);
 END;
 /
+COMMIT;
 
 SELECT
     *
@@ -80,6 +82,7 @@ EXCEPTION
         dbms_output.put_line('Error inserting into episode: ' || sqlerrm);
 END;
 /
+COMMIT;
 
 SELECT
     *
@@ -103,6 +106,7 @@ EXCEPTION
         dbms_output.put_line('Error inserting into genre: ' || sqlerrm);
 END;
 /
+COMMIT;
 
 SELECT
     *
@@ -126,6 +130,7 @@ EXCEPTION
         dbms_output.put_line('Error inserting into movie: ' || sqlerrm);
 END;
 /
+COMMIT;
 
 SELECT
     *
@@ -156,6 +161,7 @@ EXCEPTION
         dbms_output.put_line('Error inserting into content_genre: ' || sqlerrm);
 END;
 /
+COMMIT;
 
 SELECT
     *
@@ -195,6 +201,7 @@ EXCEPTION
         dbms_output.put_line('Error inserting into app_user: ' || sqlerrm);
 END;
 /
+COMMIT;
 
 SELECT
     *
@@ -218,6 +225,7 @@ EXCEPTION
         dbms_output.put_line('Error inserting into user_preference: ' || sqlerrm);
 END;
 /
+COMMIT;
 
 SELECT
     *
@@ -240,6 +248,7 @@ EXCEPTION
         dbms_output.put_line('Error inserting into favorite_content: ' || sqlerrm);
 END;
 /
+COMMIT;
 
 SELECT
     *
