@@ -31,16 +31,28 @@ select * from user_preference_view;
 
 
 CREATE OR REPLACE VIEW user_favorite_content AS
-SELECT DISTINCT
-    u.id AS user_id,
-    u.username,
-    f.id AS favorite_content_id,
-    f.tv_show_id,
-    f.movie_id
+SELECT
+
+    u.first_name,
+    u.last_name,
+    'TV Show' AS content_type,
+    t.show_title AS content_title
 FROM
     app_user u
-    JOIN favorite_content f ON u.id = f.user_id;
+    JOIN favorite_content f ON u.id = f.user_id
+    JOIN tv_show t ON f.tv_show_id = t.id
 
+UNION
+
+SELECT
+   u.first_name,
+    u.last_name,
+    'Movie' AS content_type,
+    m.movie_title AS content_title
+FROM
+    app_user u
+    JOIN favorite_content f ON u.id = f.user_id
+    JOIN movie m ON f.movie_id = m.id;
 
 
 Select * from user_favorite_content;
@@ -67,8 +79,6 @@ Select * from movie_genres;
 CREATE OR REPLACE VIEW tv_show_episodes AS
 SELECT
     t.show_title,
-    t.show_desc,
-    e.id AS episode_id,
     e.episode_title,
     e.episode_desc
 FROM
@@ -85,11 +95,15 @@ SELECT
     pc.headquarters,
     M.movie_title,
     t.show_title,
-    COALESCE(t.show_title, m.movie_title) AS production_title
+    CASE
+        WHEN t.show_title IS NOT NULL THEN t.show_title
+        WHEN m.movie_title IS NOT NULL THEN m.movie_title
+    END AS production_title
 FROM
     production_co pc
     LEFT JOIN tv_show t ON pc.id = t.production_co_id
     LEFT JOIN movie m ON pc.id = m.production_co_id;
+
     
 Select * from production_company_productions;
 
@@ -116,12 +130,11 @@ FROM
 SELECT * FROM genre_media_view;
     
 
----------------------
+---------------------This view can list the movies and tv shows by title, genre and year of release
 
 CREATE OR REPLACE VIEW all_media AS
 SELECT
     'Movie' AS type,
-    m.id AS media_id,
     m.movie_title AS title,
     m.movie_release_yr AS release_year,
     m.movie_explicit_content AS explicit_content,
@@ -135,7 +148,6 @@ UNION
 
 SELECT
     'TV Show' AS type,
-    t.id AS media_id,
     t.show_title AS title,
     t.show_release_yr AS release_year,
     t.show_explicit_content AS explicit_content,
@@ -157,8 +169,8 @@ CREATE OR REPLACE VIEW restricted_content AS
 SELECT u.id as user_id,
     m.id AS media_id,
     CASE
-        WHEN u.dob > SYSDATE - INTERVAL '18' YEAR AND m.movie_explicit_content = 'Y' THEN 'Blocked'
-        WHEN u.dob > SYSDATE - INTERVAL '18' YEAR AND t.show_explicit_content = 'Y' THEN 'Blocked'
+        WHEN u.dob > SYSDATE - INTERVAL '18' YEAR AND m.movie_explicit_content = 'N' THEN 'Blocked'
+        WHEN u.dob > SYSDATE - INTERVAL '18' YEAR AND t.show_explicit_content = 'N' THEN 'Blocked'
         ELSE 'Not Blocked'
     END AS block_status
 FROM
@@ -166,13 +178,14 @@ FROM
     FULL OUTER JOIN tv_show t ON m.id = t.id
     CROSS JOIN app_user u
 WHERE
-    (u.dob > SYSDATE - INTERVAL '18' YEAR AND m.movie_explicit_content = 'Y')
-    OR (u.dob > SYSDATE - INTERVAL '18' YEAR AND t.show_explicit_content = 'Y');
+    (u.dob > SYSDATE - INTERVAL '18' YEAR AND m.movie_explicit_content = 'N')
+    OR (u.dob > SYSDATE - INTERVAL '18' YEAR AND t.show_explicit_content = 'N');
 
 
 SELECT * FROM restricted_content
-WHERE user_id = (SELECT id FROM app_user WHERE username = 'danield');
+WHERE user_id = (SELECT id FROM app_user WHERE username = 'bob');
 
---------This view blocks the users below the age of 18 from adding explicit content to their favorites 
+
+
 
 
