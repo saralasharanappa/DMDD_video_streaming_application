@@ -73,55 +73,37 @@ BEGIN
 
 END;
 /
-
 DECLARE
     ncount NUMBER;
 BEGIN
-  -- Check if PRODUCTION_COMPANY_ROLE already exists
-    SELECT
-        COUNT(1)
+    -- Check if PRODUCTION_COMPANY_ROLE already exists
+    SELECT COUNT(1)
     INTO ncount
-    FROM
-        dba_roles
-    WHERE
-        role = 'PRODUCTION_COMPANY_ROLE';
+    FROM dba_roles
+    WHERE role = 'PRODUCTION_COMPANY_ROLE';
 
-    IF ( ncount > 0 ) THEN
+    IF (ncount > 0) THEN
         dbms_output.put_line('PRODUCTION_COMPANY_ROLE ALREADY EXISTS');
     ELSE
-    -- Create PRODUCTION_COMPANY_ROLE
+        -- Create PRODUCTION_COMPANY_ROLE
         EXECUTE IMMEDIATE 'CREATE ROLE PRODUCTION_COMPANY_ROLE';
-    
-    -- Grant CONNECT and CREATE SESSION privileges
+
+        -- Grant CONNECT and CREATE SESSION privileges
         EXECUTE IMMEDIATE 'GRANT CREATE SESSION, CONNECT TO PRODUCTION_COMPANY_ROLE';
-    
-    -- Grant SELECT, UPDATE, INSERT, DELETE on specific tables
-        FOR x IN (
-            SELECT
-                *
-            FROM
-                user_tables
-            WHERE
-                table_name IN ( 'TV_SHOW', 'MOVIE' )
-        ) LOOP
-            EXECUTE IMMEDIATE 'GRANT SELECT, UPDATE, INSERT, DELETE ON '
-                              || x.table_name
-                              || ' TO PRODUCTION_COMPANY_ROLE';
+
+        -- Check and grant privileges on tables
+        FOR tname IN (SELECT table_name FROM user_tables WHERE table_name IN ('TV_SHOW', 'MOVIE')) LOOP
+            EXECUTE IMMEDIATE 'GRANT SELECT, UPDATE, INSERT, DELETE ON ' || tname.table_name || ' TO PRODUCTION_COMPANY_ROLE';
         END LOOP;
 
-    -- Grant SELECT on content-related views
-        EXECUTE IMMEDIATE 'GRANT SELECT ON MOVIE_GENRES TO PRODUCTION_COMPANY_ROLE';
-        EXECUTE IMMEDIATE 'GRANT SELECT ON TV_SHOW_EPISODES TO PRODUCTION_COMPANY_ROLE';
-        EXECUTE IMMEDIATE 'GRANT SELECT ON PRODUCTION_COMPANY_MOVIES TO PRODUCTION_COMPANY_ROLE';
-        EXECUTE IMMEDIATE 'GRANT SELECT ON PRODUCTION_COMPANY_TV_SHOWS TO PRODUCTION_COMPANY_ROLE';
-        EXECUTE IMMEDIATE 'GRANT SELECT ON GENRE_MEDIA_VIEW TO PRODUCTION_COMPANY_ROLE';
-        EXECUTE IMMEDIATE 'GRANT SELECT ON ALL_MEDIA TO PRODUCTION_COMPANY_ROLE';
-        EXECUTE IMMEDIATE 'GRANT SELECT ON NON_EXPLICIT_CONTENT_VIEW TO PRODUCTION_COMPANY_ROLE';
-        EXECUTE IMMEDIATE 'GRANT SELECT ON EXPLICIT_CONTENT_VIEW TO PRODUCTION_COMPANY_ROLE';
+        -- Check and grant privileges on views
+        FOR vname IN (SELECT view_name FROM user_views WHERE view_name IN ('MOVIE_GENRES', 'TV_SHOW_EPISODES', 'PRODUCTION_COMPANY_MOVIES', 'PRODUCTION_COMPANY_TV_SHOWS', 'GENRE_MEDIA_VIEW', 'ALL_MEDIA', 'NON_EXPLICIT_CONTENT_VIEW', 'EXPLICIT_CONTENT_VIEW')) LOOP
+            EXECUTE IMMEDIATE 'GRANT SELECT ON ' || vname.view_name || ' TO PRODUCTION_COMPANY_ROLE';
+        END LOOP;
+
         COMMIT;
         dbms_output.put_line('PRODUCTION_COMPANY_ROLE is created and granted privileges');
     END IF;
-
 END;
 /
 
