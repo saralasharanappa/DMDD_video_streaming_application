@@ -663,3 +663,148 @@ EXCEPTION
 END update_user_preference;
 /
 
+-------------------DELETE PROCEDURES--------------------
+
+CREATE OR REPLACE PROCEDURE delete_content_genre (
+    p_id IN content_genre.id%TYPE
+) IS
+BEGIN
+    DELETE FROM content_genre
+    WHERE id = p_id;
+
+    COMMIT;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        raise_application_error(-20003, 'Content genre entry not found with the provided ID.');
+    WHEN OTHERS THEN
+        raise_application_error(-20004, 'An error occurred during the deletion process.');
+END delete_content_genre;
+/
+
+CREATE OR REPLACE PROCEDURE delete_episode (
+    p_id IN episode.id%TYPE
+) IS
+BEGIN
+    DELETE FROM episode
+    WHERE id = p_id;
+
+    COMMIT;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        raise_application_error(-20003, 'Episode not found with the provided ID.');
+    WHEN OTHERS THEN
+        raise_application_error(-20004, 'An error occurred during the deletion process.');
+END delete_episode;
+/
+
+CREATE OR REPLACE PROCEDURE delete_favorite_content (
+    p_id IN favorite_content.id%TYPE
+) IS
+BEGIN
+    DELETE FROM favorite_content
+    WHERE id = p_id;
+
+    COMMIT;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        raise_application_error(-20003, 'Favorite content entry not found with the provided ID.');
+    WHEN OTHERS THEN
+        raise_application_error(-20004, 'An error occurred during the deletion process.');
+END delete_favorite_content;
+/
+
+CREATE OR REPLACE PROCEDURE delete_genre (
+    p_id IN genre.id%TYPE
+) IS
+BEGIN
+    DELETE FROM genre
+    WHERE id = p_id;
+
+    COMMIT;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        raise_application_error(-20003, 'Genre not found with the provided ID.');
+    WHEN OTHERS THEN
+        raise_application_error(-20004, 'An error occurred during the deletion process.');
+END delete_genre;
+/
+
+CREATE OR REPLACE PROCEDURE delete_movie (
+    p_id IN movie.id%TYPE
+) IS
+BEGIN
+    DELETE FROM movie
+    WHERE id = p_id;
+
+    COMMIT;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        raise_application_error(-20003, 'Movie not found with the provided ID.');
+    WHEN OTHERS THEN
+        raise_application_error(-20004, 'An error occurred during the deletion process.');
+END delete_movie;
+/
+
+CREATE OR REPLACE PROCEDURE delete_production_co (
+    p_id IN production_co.id%TYPE
+) IS
+BEGIN
+    DELETE FROM production_co
+    WHERE id = p_id;
+
+    COMMIT;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        raise_application_error(-20003, 'Production company not found with the provided ID.');
+    WHEN OTHERS THEN
+        raise_application_error(-20004, 'An error occurred during the deletion process.');
+END delete_production_co;
+/
+
+CREATE OR REPLACE PROCEDURE delete_tv_show (
+    p_id IN tv_show.id%TYPE
+) IS
+BEGIN
+    DELETE FROM tv_show
+    WHERE id = p_id;
+
+    COMMIT;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        raise_application_error(-20003, 'TV show not found with the provided ID.');
+    WHEN OTHERS THEN
+        raise_application_error(-20004, 'An error occurred during the deletion process.');
+END delete_tv_show;
+/
+
+CREATE OR REPLACE PROCEDURE delete_app_user (
+    p_id IN app_user.id%TYPE
+) IS
+BEGIN
+    DELETE FROM app_user
+    WHERE id = p_id;
+
+    COMMIT;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        raise_application_error(-20003, 'App user not found with the provided ID.');
+    WHEN OTHERS THEN
+        raise_application_error(-20004, 'An error occurred during the deletion process.');
+END delete_app_user;
+/
+
+CREATE OR REPLACE PROCEDURE delete_user_preference (
+    p_id IN user_preference.id%TYPE
+) IS
+BEGIN
+    DELETE FROM user_preference
+    WHERE id = p_id;
+
+    COMMIT;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        raise_application_error(-20003, 'User preference not found with the provided ID.');
+    WHEN OTHERS THEN
+        raise_application_error(-20004, 'An error occurred during the deletion process.');
+END delete_user_preference;
+/
