@@ -38,7 +38,9 @@ BEGIN
     EXECUTE IMMEDIATE 'GRANT CREATE SESSION, CONNECT TO PRODUCTION_COMPANY_USER';
 
     -- Grant EXECUTE privilege on production_company_pkg procedures
-    EXECUTE IMMEDIATE 'GRANT EXECUTE ON production_company_pkg TO PRODUCTION_COMPANY_USER';
+    EXECUTE IMMEDIATE 'GRANT EXECUTE ON insert_productioncompany_pkg TO PRODUCTION_COMPANY_USER';
+    EXECUTE IMMEDIATE 'GRANT EXECUTE ON update_productioncompany_pkg TO PRODUCTION_COMPANY_USER';
+    EXECUTE IMMEDIATE 'GRANT EXECUTE ON delete_productioncompany_pkg TO PRODUCTION_COMPANY_USER';
 
     COMMIT;
     dbms_output.put_line('PRODUCTION_COMPANY_USER is created and granted privileges');
@@ -51,6 +53,8 @@ BEGIN
 
     -- Grant EXECUTE privilege on app_user_pkg procedures
     EXECUTE IMMEDIATE 'GRANT EXECUTE ON app_user_pkg TO APP_USER';
+    EXECUTE IMMEDIATE 'GRANT EXECUTE ON update_appuser_pkg TO PRODUCTION_COMPANY_USER';
+    EXECUTE IMMEDIATE 'GRANT EXECUTE ON delete_appuser_pkg TO PRODUCTION_COMPANY_USER';
 
     COMMIT;
     dbms_output.put_line('APP_USER is created and granted privileges');

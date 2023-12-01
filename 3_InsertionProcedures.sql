@@ -1,3 +1,5 @@
+--------------------INSERT PACKAGES--------------------------
+
 CREATE OR REPLACE PACKAGE insert_productioncompany_pkg AS
     PROCEDURE insert_into_production_co (
         p_company_name IN production_co.company_name%TYPE,
@@ -800,6 +802,8 @@ EXCEPTION
 END update_content_genre;
 /
 
+--------------------DELETE PACKAGES--------------------------
+
 CREATE OR REPLACE PACKAGE delete_productioncompany_pkg AS
     PROCEDURE delete_production_co (
         p_id IN production_co.id%TYPE
@@ -970,11 +974,12 @@ CREATE OR REPLACE PROCEDURE delete_content_genre (
 ) IS
 BEGIN
     DELETE FROM content_genre
-    WHERE id = p_id;
+    WHERE
+        id = p_id;
 
     COMMIT;
 EXCEPTION
-    WHEN NO_DATA_FOUND THEN
+    WHEN no_data_found THEN
         raise_application_error(-20003, 'Content genre entry not found with the provided ID.');
     WHEN OTHERS THEN
         raise_application_error(-20004, 'An error occurred during the deletion process.');
@@ -986,13 +991,79 @@ CREATE OR REPLACE PROCEDURE delete_genre (
 ) IS
 BEGIN
     DELETE FROM genre
-    WHERE id = p_id;
+    WHERE
+        id = p_id;
 
     COMMIT;
 EXCEPTION
-    WHEN NO_DATA_FOUND THEN
+    WHEN no_data_found THEN
         raise_application_error(-20003, 'Genre not found with the provided ID.');
     WHEN OTHERS THEN
         raise_application_error(-20004, 'An error occurred during the deletion process.');
 END delete_genre;
+/
+
+--------------------TRIGGERS--------------------------
+
+CREATE OR REPLACE TRIGGER restrict_explicit_content BEFORE
+    INSERT OR UPDATE ON favorite_content
+    FOR EACH ROW
+DECLARE
+    user_age         NUMBER;
+    content_explicit CHAR(1);
+BEGIN
+    -- Calculate the user's age based on the provided date of birth
+    SELECT
+        trunc(months_between(sysdate,(
+            SELECT
+                dob
+            FROM
+                app_user
+            WHERE
+                id = :new.user_id
+        )) / 12)
+    INTO user_age
+    FROM
+        dual;
+
+    -- Determine if the content is explicit based on the selected TV show or movie
+    IF :new.tv_show_id IS NOT NULL THEN
+        SELECT
+            show_explicit_content
+        INTO content_explicit
+        FROM
+            tv_show
+        WHERE
+            id = :new.tv_show_id;
+
+    ELSIF :new.movie_id IS NOT NULL THEN
+        SELECT
+            movie_explicit_content
+        INTO content_explicit
+        FROM
+            movie
+        WHERE
+            id = :new.movie_id;
+
+    END IF;
+
+    -- Check age and content explicitness
+    IF
+        user_age < 18
+        AND content_explicit = 'Y'
+    THEN
+        raise_application_error(-20004, 'Users under 18 cannot add favorite content with explicit content.');
+    END IF;
+
+END;
+/
+
+CREATE OR REPLACE TRIGGER auto_generate_username BEFORE
+    INSERT ON app_user
+    FOR EACH ROW
+BEGIN
+    -- Generate a username using the first letter of the first name and the entire last name
+    :new.username := substr(upper(:new.first_name), 1, 1)
+                     || upper(:new.last_name);
+END;
 /
