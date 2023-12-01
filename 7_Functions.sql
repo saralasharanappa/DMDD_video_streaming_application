@@ -274,3 +274,128 @@ BEGIN
 END;
 /
 
+------------GET THE TOP 5 TV SHOW, EPISODES AND MOVIES BASED ON USER PREFERENCES --------- 
+
+         --  Get the list of top 5 movies preffered by user --
+CREATE OR REPLACE FUNCTION get_top_preferred_movies RETURN SYS_REFCURSOR AS
+    top_movies_cursor SYS_REFCURSOR;
+    v_movie_count NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO v_movie_count FROM movie m;
+
+    IF v_movie_count = 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'No movies found.');
+    ELSE
+        OPEN top_movies_cursor FOR
+        SELECT
+            m.movie_title,
+            COUNT(up.id) AS preference_count
+        FROM
+            movie m
+        JOIN
+            favorite_content f ON m.id = f.movie_id
+        JOIN
+            user_preference up ON m.id = up.genre_id
+        GROUP BY
+            m.movie_title
+        ORDER BY
+            preference_count DESC
+        FETCH FIRST 5 ROWS ONLY;
+
+        RETURN top_movies_cursor;
+    END IF;
+END get_top_preferred_movies;
+/
+
+         --  Get the list of top 5 tv shows preffered by user --
+
+CREATE OR REPLACE FUNCTION get_top_preferred_tv_shows RETURN SYS_REFCURSOR AS
+    top_tv_shows_cursor SYS_REFCURSOR;
+    v_tvshow_count NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO v_tvshow_count FROM tv_show t;
+
+    IF v_tvshow_count = 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'No TV shows found.');
+    ELSE
+        OPEN top_tv_shows_cursor FOR
+        SELECT
+            t.show_title,
+            COUNT(up.id) AS preference_count
+        FROM
+            tv_show t
+        JOIN
+            favorite_content f ON t.id = f.tv_show_id
+        JOIN
+            user_preference up ON t.id = up.genre_id
+        GROUP BY
+            t.show_title
+        ORDER BY
+            preference_count DESC
+        FETCH FIRST 5 ROWS ONLY;
+
+        RETURN top_tv_shows_cursor;
+    END IF;
+END get_top_preferred_tv_shows;
+/
+
+         --  Get the list of most preffered  content by user based --
+
+CREATE OR REPLACE FUNCTION get_most_preferred_content RETURN SYS_REFCURSOR AS
+    most_preferred_content_cursor SYS_REFCURSOR;
+    v_prefered_count NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO v_prefered_count FROM favorite_content;
+
+    IF v_prefered_count = 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'No preferred content found.');
+    ELSE
+        OPEN most_preferred_content_cursor FOR
+        SELECT
+            f.id AS favorite_content_id,
+            m.movie_title,
+            t.show_title,
+            f.user_id
+        FROM
+            favorite_content f
+        LEFT JOIN
+            movie m ON f.movie_id = m.id
+        LEFT JOIN
+            tv_show t ON f.tv_show_id = t.id;
+
+        RETURN most_preferred_content_cursor;
+    END IF;
+END get_most_preferred_content;
+/
+            --  Get the list of most liked genres by the user --
+
+CREATE OR REPLACE FUNCTION get_most_liked_genres RETURN SYS_REFCURSOR AS
+    most_liked_genres_cursor SYS_REFCURSOR;
+    v_genre_count NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO v_genre_count FROM user_preference;
+
+    IF v_genre_count = 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'No liked genres found.');
+    ELSE
+        OPEN most_liked_genres_cursor FOR
+        SELECT
+            g.genre_name,
+            COUNT(up.id) AS like_count
+        FROM
+            genre g
+        JOIN
+            user_preference up ON g.id = up.genre_id
+        GROUP BY
+            g.genre_name
+        ORDER BY
+            like_count DESC
+        FETCH FIRST 5 ROWS ONLY;
+
+        RETURN most_liked_genres_cursor;
+    END IF;
+END get_most_liked_genres;
+/
+
+
+
