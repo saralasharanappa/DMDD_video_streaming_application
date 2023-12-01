@@ -61,6 +61,6 @@ BEGIN
         EXECUTE IMMEDIATE 'GRANT EXECUTE ON insert_into_production_co TO PRODUCTION_COMPANY_USER';
 
         COMMIT;
-        dbms_output.put_line('PRODUCTION_COMPANY_ROLE is created and granted privileges');
+        dbms_output.put_line('PRODUCTION_COMPANY_USER is created and granted privileges');
     END IF;
 END;

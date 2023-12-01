@@ -1,3 +1,24 @@
+-- Insert production company data into production_co table
+CREATE OR REPLACE PROCEDURE insert_into_production_co (
+    p_company_name IN production_co.company_name%TYPE,
+    p_headquarters IN production_co.headquarters%TYPE
+) IS
+BEGIN
+    INSERT INTO production_co (
+        company_name,
+        headquarters
+    ) VALUES (
+        p_company_name,
+        p_headquarters
+    );
+
+    COMMIT; -- Optional: Commit the transaction if needed
+EXCEPTION
+    WHEN dup_val_on_index THEN
+        raise_application_error(-20001, 'Duplicate combination of company name and headquarters not allowed.');
+END;
+/
+
 CREATE OR REPLACE PROCEDURE insert_into_content_genre (
     p_genre_id   IN content_genre.genre_id%TYPE,
     p_tv_show_id IN content_genre.tv_show_id%TYPE,
@@ -143,27 +164,6 @@ BEGIN
 EXCEPTION
     WHEN dup_val_on_index THEN
         raise_application_error(-20001, 'Duplicate movie title not allowed.');
-END;
-/
-
-CREATE OR REPLACE PROCEDURE insert_into_production_co (
-    p_company_name IN production_co.company_name%TYPE,
-    p_headquarters IN production_co.headquarters%TYPE
-) IS
-BEGIN
-    INSERT INTO production_co (
-        id,
-        company_name,
-        headquarters
-    ) VALUES (
-        production_co_seq.NEXTVAL,
-        p_company_name,
-        p_headquarters
-    );
-
-EXCEPTION
-    WHEN dup_val_on_index THEN
-        raise_application_error(-20001, 'Duplicate combination of company name and headquarters not allowed.');
 END;
 /
 
