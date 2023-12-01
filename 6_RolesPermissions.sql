@@ -30,24 +30,9 @@ BEGIN
     ELSE
         dbms_output.put_line('APP_USER DOES NOT EXIST');
     END IF;
-    
-        -- Check if APP_USER_UNDER_18 exists
-    SELECT COUNT(1)
-    INTO ncount
-    FROM dba_users
-    WHERE username = 'APP_USER_UNDER_18';
-
-    IF (ncount > 0) THEN
-        -- Drop APP_USER_UNDER_18 if it exists
-        EXECUTE IMMEDIATE 'DROP USER APP_USER_UNDER_18 CASCADE';
-        dbms_output.put_line('APP_USER_UNDER_18 DROPPED');
-    ELSE
-        dbms_output.put_line('APP_USER_UNDER_18 DOES NOT EXIST');
-    END IF;
-    
 
     -- Create PRODUCTION_COMPANY_ROLE
-    EXECUTE IMMEDIATE 'CREATE USER PRODUCTION_COMPANY_USER';
+    EXECUTE IMMEDIATE 'CREATE USER PRODUCTION_COMPANY_USER IDENTIFIED BY ProductionAdmin2023#';
 
     -- Grant CONNECT and CREATE SESSION privileges
     EXECUTE IMMEDIATE 'GRANT CREATE SESSION, CONNECT TO PRODUCTION_COMPANY_USER';
@@ -59,7 +44,7 @@ BEGIN
     dbms_output.put_line('PRODUCTION_COMPANY_USER is created and granted privileges');
 
     -- Create APP_USER
-    EXECUTE IMMEDIATE 'CREATE USER APP_USER';
+    EXECUTE IMMEDIATE 'CREATE USER APP_USER IDENTIFIED BY ApplicationUser2023#';
 
     -- Grant CONNECT and CREATE SESSION privileges
     EXECUTE IMMEDIATE 'GRANT CREATE SESSION, CONNECT TO APP_USER';
@@ -70,16 +55,5 @@ BEGIN
     COMMIT;
     dbms_output.put_line('APP_USER is created and granted privileges');
     
-        -- Create APP_USER_UNDER_18
-    EXECUTE IMMEDIATE 'CREATE USER APP_USER_UNDER_18';
-
-    -- Grant CONNECT and CREATE SESSION privileges
-    EXECUTE IMMEDIATE 'GRANT CREATE SESSION, CONNECT TO APP_USER_UNDER_18';
-
-    -- Grant EXECUTE privilege on app_user_pkg procedures
-    EXECUTE IMMEDIATE 'GRANT EXECUTE ON app_user_pkg TO APP_USER_UNDER_18';
-
-    COMMIT;
-    dbms_output.put_line('APP_USER_UNDER_18 is created and granted privileges');
 END;
 /
