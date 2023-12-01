@@ -147,8 +147,8 @@ CREATE TABLE content_genre (
                                           OR ( tv_show_id IS NULL
                                                AND movie_id IS NOT NULL ) ),
     CONSTRAINT unique_genre_tvshow_movie_combination UNIQUE ( genre_id,
-                                                             tv_show_id,
-                                                             movie_id )
+                                                              tv_show_id,
+                                                              movie_id )
 );
 
 CREATE SEQUENCE episode_seq START WITH 1 INCREMENT BY 1 NOMAXVALUE NOCYCLE;
@@ -255,39 +255,48 @@ CREATE TABLE user_preference (
 
 ALTER TABLE content_genre
     ADD CONSTRAINT content_genre_genre_fk FOREIGN KEY ( genre_id )
-        REFERENCES genre ( id );
+        REFERENCES genre ( id )
+        ON DELETE CASCADE;
 
 ALTER TABLE content_genre
     ADD CONSTRAINT content_genre_tv_fk FOREIGN KEY ( tv_show_id )
-        REFERENCES tv_show ( id );
+        REFERENCES tv_show ( id )
+        ON DELETE CASCADE;
 
 ALTER TABLE content_genre
     ADD CONSTRAINT content_genre_movie_fk FOREIGN KEY ( movie_id )
-        REFERENCES movie ( id );
+        REFERENCES movie ( id )
+        ON DELETE CASCADE;
 
 ALTER TABLE episode
     ADD CONSTRAINT episode_tv_show_fk FOREIGN KEY ( tv_show_id )
-        REFERENCES tv_show ( id );
+        REFERENCES tv_show ( id )
+        ON DELETE CASCADE;
 
 ALTER TABLE favorite_content
     ADD CONSTRAINT favorite_content_tv_fk FOREIGN KEY ( tv_show_id )
-        REFERENCES tv_show ( id );
+        REFERENCES tv_show ( id )
+        ON DELETE CASCADE;
 
 ALTER TABLE favorite_content
     ADD CONSTRAINT favorite_content_movie_fk FOREIGN KEY ( movie_id )
-        REFERENCES movie ( id );
+        REFERENCES movie ( id )
+        ON DELETE CASCADE;
 
 ALTER TABLE favorite_content
     ADD CONSTRAINT favorite_content_user_fk FOREIGN KEY ( user_id )
-        REFERENCES app_user ( id );
-
-ALTER TABLE movie
-    ADD CONSTRAINT movie_production_co_fk FOREIGN KEY ( production_co_id )
-        REFERENCES production_co ( id );
+        REFERENCES app_user ( id )
+        ON DELETE CASCADE;
 
 ALTER TABLE tv_show
     ADD CONSTRAINT tv_show_production_co_fk FOREIGN KEY ( production_co_id )
-        REFERENCES production_co ( id );
+        REFERENCES production_co ( id )
+            ON DELETE SET NULL;
+
+ALTER TABLE movie
+    ADD CONSTRAINT movie_production_co_fk FOREIGN KEY ( production_co_id )
+        REFERENCES production_co ( id )
+            ON DELETE SET NULL;
 
 ALTER TABLE user_preference
     ADD CONSTRAINT user_preference_genre_fk FOREIGN KEY ( genre_id )
