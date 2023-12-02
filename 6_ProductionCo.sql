@@ -1,3 +1,4 @@
+ALTER SESSION SET current_schema=APP_ADMIN;
 SET SERVEROUTPUT ON;
 
 BEGIN
@@ -16,11 +17,6 @@ EXCEPTION
         dbms_output.put_line('Error inserting into production_co: ' || sqlerrm);
 END;
 /
-
-SELECT
-    *
-FROM
-    production_co;
 
 BEGIN
     insert_productioncompany_pkg.insert_into_tv_show('TV Show A', 'Description of TV Show A', 2020, 'N', 5,
@@ -49,11 +45,6 @@ EXCEPTION
 END;
 /
 
-SELECT
-    *
-FROM
-    tv_show;
-
 BEGIN
     insert_productioncompany_pkg.insert_into_episode('Pilot Episode A', 'The first episode of TV Show A', 1, 1, 1);
     insert_productioncompany_pkg.insert_into_episode('Second Episode A', 'Continuation of the story for TV Show A', 1, 2, 1);
@@ -81,11 +72,6 @@ EXCEPTION
 END;
 /
 
-SELECT
-    *
-FROM
-    episode;
-/
 
 BEGIN
     insert_productioncompany_pkg.insert_into_movie('Movie A', 'Description of Movie A', 2020, 'N', 1);
