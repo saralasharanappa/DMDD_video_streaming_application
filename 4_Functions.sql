@@ -1,14 +1,14 @@
 SET SERVEROUTPUT ON;
 
 -----------------GET THE COUNT OF EPISODES IN A TV SHOW-----------------------
-CREATE OR REPLACE FUNCTION count_episodes(tv_show_id IN tv_show.id%TYPE) 
+CREATE OR REPLACE FUNCTION count_episodes(p_tv_show_id IN tv_show.id%TYPE) 
 RETURN NUMBER IS 
     episodes_count NUMBER;
 BEGIN
     SELECT COUNT(*)
     INTO episodes_count
     FROM episode
-    WHERE tv_show_id = tv_show_id;
+    WHERE tv_show_id = p_tv_show_id;
     
     RETURN episodes_count;
 EXCEPTION
@@ -211,7 +211,7 @@ END recommend_content;
 /
 --SELECT recommend_content(1) AS recommendation FROM dual;
 
-------------GET THE TOP 5 TV SHOW, EPISODES AND MOVIES BASED ON USER PREFERENCES --------- 
+------------GET THE TOP TV SHOWS AND MOVIES BASED ON USER PREFERENCES --------- 
 
          --  Get the list of top 5 movies preffered by user --
 CREATE OR REPLACE FUNCTION get_top_preferred_movies RETURN SYS_REFCURSOR AS
