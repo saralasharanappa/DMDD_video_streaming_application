@@ -209,7 +209,9 @@ EXCEPTION
         RAISE_APPLICATION_ERROR(-20013, 'An error occurred during the recommendation process: ' || SQLERRM);
 END recommend_content;
 /
---SELECT recommend_content(1) AS recommendation FROM dual;
+
+
+
 
 ------------GET THE TOP TV SHOWS AND MOVIES BASED ON USER PREFERENCES --------- 
 
@@ -274,35 +276,6 @@ BEGIN
         RETURN top_tv_shows_cursor;
     END IF;
 END get_top_preferred_tv_shows;
-/
-
-         --  Get the list of most preffered  content by user based --
-
-CREATE OR REPLACE FUNCTION get_most_preferred_content RETURN SYS_REFCURSOR AS
-    most_preferred_content_cursor SYS_REFCURSOR;
-    v_prefered_count NUMBER;
-BEGIN
-    SELECT COUNT(*) INTO v_prefered_count FROM favorite_content;
-
-    IF v_prefered_count = 0 THEN
-        RAISE_APPLICATION_ERROR(-20001, 'No preferred content found.');
-    ELSE
-        OPEN most_preferred_content_cursor FOR
-        SELECT
-            f.id AS favorite_content_id,
-            m.movie_title,
-            t.show_title,
-            f.user_id
-        FROM
-            favorite_content f
-        LEFT JOIN
-            movie m ON f.movie_id = m.id
-        LEFT JOIN
-            tv_show t ON f.tv_show_id = t.id;
-
-        RETURN most_preferred_content_cursor;
-    END IF;
-END get_most_preferred_content;
 /
             --  Get the list of most liked genres by the user --
 
