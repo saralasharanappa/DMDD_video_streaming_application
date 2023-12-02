@@ -211,69 +211,6 @@ END recommend_content;
 /
 --SELECT recommend_content(1) AS recommendation FROM dual;
 
----------------------GET SIMILAR CONTENT-----------------------
-CREATE OR REPLACE FUNCTION recommend_similar_content (
-    p_content_id IN NUMBER, 
-    p_content_type IN VARCHAR2 -- 'movie' or 'tv_show'
-) 
-RETURN SYS_REFCURSOR IS 
-    v_genre_id genre.id%TYPE;
-    v_similar_content SYS_REFCURSOR;
-
-    -- Find the genre of the provided content
-    BEGIN
-        IF p_content_type = 'movie' THEN
-            SELECT genre_id INTO v_genre_id
-            FROM content_genre
-            WHERE movie_id = p_content_id AND ROWNUM = 1;
-        ELSIF p_content_type = 'tv_show' THEN
-            SELECT genre_id INTO v_genre_id
-            FROM content_genre
-            WHERE tv_show_id = p_content_id AND ROWNUM = 1;
-        ELSE
-            RAISE_APPLICATION_ERROR(-20013, 'Invalid content type provided.');
-        END IF;
-
-        -- Open a ref cursor for similar content from the same genre
-        OPEN v_similar_content FOR
-            SELECT m.id AS content_id, m.movie_title AS title, 'Movie' AS content_type
-            FROM movie m
-            JOIN content_genre cg ON cg.movie_id = m.id
-            WHERE cg.genre_id = v_genre_id AND cg.movie_id != p_content_id
-            UNION ALL
-            SELECT tv.id AS content_id, tv.show_title AS title, 'TV Show' AS content_type
-            FROM tv_show tv
-            JOIN content_genre cg ON cg.tv_show_id = tv.id
-            WHERE cg.genre_id = v_genre_id AND cg.tv_show_id != p_content_id;
-
-        RETURN v_similar_content;
-    EXCEPTION
-        WHEN NO_DATA_FOUND THEN
-            RAISE_APPLICATION_ERROR(-20014, 'No similar content found.');
-        WHEN OTHERS THEN
-            RAISE_APPLICATION_ERROR(-20015, 'An error occurred during the recommendation process: ' || SQLERRM);
-END recommend_similar_content;
-/
-
-DECLARE
-    v_similar_content SYS_REFCURSOR;
-    v_content_id NUMBER;
-    v_title VARCHAR2(255);
-    v_content_type VARCHAR2(50);
-BEGIN
-    -- Assuming you're looking for content similar to the movie with ID 1
-    v_similar_content := recommend_similar_content(2, 'movie');
-
-    LOOP
-        FETCH v_similar_content INTO v_content_id, v_title, v_content_type;
-        EXIT WHEN v_similar_content%NOTFOUND;
-        DBMS_OUTPUT.PUT_LINE(v_content_type || ': ' || v_title);
-    END LOOP;
-    
-    CLOSE v_similar_content;
-END;
-/
-
 ------------GET THE TOP 5 TV SHOW, EPISODES AND MOVIES BASED ON USER PREFERENCES --------- 
 
          --  Get the list of top 5 movies preffered by user --
@@ -396,6 +333,3 @@ BEGIN
     END IF;
 END get_most_liked_genres;
 /
-
-
-

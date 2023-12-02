@@ -381,8 +381,8 @@ CREATE OR REPLACE PACKAGE BODY update_productioncompany_pkg AS
     -- Update only if either company_name or headquarters is not null
         UPDATE production_co
         SET
-            company_name = coalesce(p_company_name, company_name),
-            headquarters = coalesce(p_headquarters, headquarters)
+            company_name = COALESCE(p_company_name, company_name),
+            headquarters = COALESCE(p_headquarters, headquarters)
         WHERE
             id = p_id;
 
@@ -423,12 +423,12 @@ CREATE OR REPLACE PACKAGE BODY update_productioncompany_pkg AS
 
         UPDATE tv_show
         SET
-            show_title = coalesce(p_show_title, show_title),
-            show_desc = coalesce(p_show_desc, show_desc),
-            show_release_yr = coalesce(p_show_release_yr, show_release_yr),
-            show_explicit_content = coalesce(p_show_explicit_content, show_explicit_content),
-            season_count = coalesce(p_season_count, season_count),
-            production_co_id = coalesce(p_production_co_id, production_co_id)
+            show_title = COALESCE(p_show_title, show_title),
+            show_desc = COALESCE(p_show_desc, show_desc),
+            show_release_yr = COALESCE(p_show_release_yr, show_release_yr),
+            show_explicit_content = COALESCE(p_show_explicit_content, show_explicit_content),
+            season_count = COALESCE(p_season_count, season_count),
+            production_co_id = COALESCE(p_production_co_id, production_co_id)
         WHERE
             id = p_id;
 
@@ -468,11 +468,11 @@ CREATE OR REPLACE PACKAGE BODY update_productioncompany_pkg AS
 
         UPDATE episode
         SET
-            episode_title = coalesce(p_episode_title, episode_title),
-            episode_desc = coalesce(p_episode_desc, episode_desc),
-            season_no = coalesce(p_season_no, season_no),
-            episode_count = coalesce(p_episode_count, episode_count),
-            tv_show_id = coalesce(p_tv_show_id, tv_show_id)
+            episode_title = COALESCE(p_episode_title, episode_title),
+            episode_desc = COALESCE(p_episode_desc, episode_desc),
+            season_no = COALESCE(p_season_no, season_no),
+            episode_count = COALESCE(p_episode_count, episode_count),
+            tv_show_id = COALESCE(p_tv_show_id, tv_show_id)
         WHERE
             id = p_id;
 
@@ -512,11 +512,11 @@ CREATE OR REPLACE PACKAGE BODY update_productioncompany_pkg AS
 
         UPDATE movie
         SET
-            movie_title = coalesce(p_movie_title, movie_title),
-            movie_desc = coalesce(p_movie_desc, movie_desc),
-            movie_release_yr = coalesce(p_movie_release_yr, movie_release_yr),
-            movie_explicit_content = coalesce(p_movie_explicit_content, movie_explicit_content),
-            production_co_id = coalesce(p_production_co_id, production_co_id)
+            movie_title = COALESCE(p_movie_title, movie_title),
+            movie_desc = COALESCE(p_movie_desc, movie_desc),
+            movie_release_yr = COALESCE(p_movie_release_yr, movie_release_yr),
+            movie_explicit_content = COALESCE(p_movie_explicit_content, movie_explicit_content),
+            production_co_id = COALESCE(p_production_co_id, production_co_id)
         WHERE
             id = p_id;
 
@@ -603,11 +603,11 @@ CREATE OR REPLACE PACKAGE BODY update_appuser_pkg AS
 
         UPDATE app_user
         SET
-            first_name = coalesce(p_first_name, first_name),
-            last_name = coalesce(p_last_name, last_name),
-            username = coalesce(p_username, username),
-            dob = coalesce(p_dob, dob),
-            email = coalesce(p_email, email)
+            first_name = COALESCE(p_first_name, first_name),
+            last_name = COALESCE(p_last_name, last_name),
+            username = COALESCE(p_username, username),
+            dob = COALESCE(p_dob, dob),
+            email = COALESCE(p_email, email)
         WHERE
             id = p_id;
 
@@ -648,8 +648,8 @@ CREATE OR REPLACE PACKAGE BODY update_appuser_pkg AS
 
         UPDATE user_preference
         SET
-            user_id = coalesce(p_user_id, user_id),
-            genre_id = coalesce(p_genre_id, genre_id)
+            user_id = COALESCE(p_user_id, user_id),
+            genre_id = COALESCE(p_genre_id, genre_id)
         WHERE
             id = p_id;
 
@@ -697,7 +697,7 @@ CREATE OR REPLACE PACKAGE BODY update_appuser_pkg AS
         END IF;
         UPDATE favorite_content
         SET
-            user_id = coalesce(p_user_id, user_id),
+            user_id = COALESCE(p_user_id, user_id),
             tv_show_id = p_tv_show_id,
             movie_id = p_movie_id
         WHERE
@@ -738,7 +738,7 @@ BEGIN
 
     UPDATE genre
     SET
-        genre_name = coalesce(p_genre_name, genre_name)
+        genre_name = COALESCE(p_genre_name, genre_name)
     WHERE
         id = p_id;
 
@@ -787,7 +787,7 @@ BEGIN
     END IF;
     UPDATE content_genre
     SET
-        genre_id = coalesce(p_genre_id, genre_id),
+        genre_id = COALESCE(p_genre_id, genre_id),
         tv_show_id = p_tv_show_id,
         movie_id = p_movie_id
     WHERE
