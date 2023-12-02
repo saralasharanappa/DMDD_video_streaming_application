@@ -256,37 +256,37 @@ CREATE TABLE user_preference (
 ALTER TABLE content_genre
     ADD CONSTRAINT content_genre_genre_fk FOREIGN KEY ( genre_id )
         REFERENCES genre ( id )
-        ON DELETE CASCADE;
+            ON DELETE CASCADE;
 
 ALTER TABLE content_genre
     ADD CONSTRAINT content_genre_tv_fk FOREIGN KEY ( tv_show_id )
         REFERENCES tv_show ( id )
-        ON DELETE CASCADE;
+            ON DELETE CASCADE;
 
 ALTER TABLE content_genre
     ADD CONSTRAINT content_genre_movie_fk FOREIGN KEY ( movie_id )
         REFERENCES movie ( id )
-        ON DELETE CASCADE;
+            ON DELETE CASCADE;
 
 ALTER TABLE episode
     ADD CONSTRAINT episode_tv_show_fk FOREIGN KEY ( tv_show_id )
         REFERENCES tv_show ( id )
-        ON DELETE CASCADE;
+            ON DELETE CASCADE;
 
 ALTER TABLE favorite_content
     ADD CONSTRAINT favorite_content_tv_fk FOREIGN KEY ( tv_show_id )
         REFERENCES tv_show ( id )
-        ON DELETE CASCADE;
+            ON DELETE CASCADE;
 
 ALTER TABLE favorite_content
     ADD CONSTRAINT favorite_content_movie_fk FOREIGN KEY ( movie_id )
         REFERENCES movie ( id )
-        ON DELETE CASCADE;
+            ON DELETE CASCADE;
 
 ALTER TABLE favorite_content
     ADD CONSTRAINT favorite_content_user_fk FOREIGN KEY ( user_id )
         REFERENCES app_user ( id )
-        ON DELETE CASCADE;
+            ON DELETE CASCADE;
 
 ALTER TABLE tv_show
     ADD CONSTRAINT tv_show_production_co_fk FOREIGN KEY ( production_co_id )
