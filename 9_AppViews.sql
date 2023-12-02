@@ -1,7 +1,6 @@
 ------------------------This view can show each user's data.
 CREATE OR REPLACE VIEW app_user_view AS
     SELECT
-        id,
         first_name,
         last_name,
         username,
@@ -19,7 +18,6 @@ FROM
 
 CREATE OR REPLACE VIEW user_preference_view AS
     SELECT
-        u.id         AS user_id,
         u.first_name,
         u.last_name,
         g.genre_name AS genrename
@@ -218,17 +216,3 @@ CREATE OR REPLACE VIEW restricted_content AS
           AND m.movie_explicit_content = 'N' )
         OR ( u.dob > sysdate - INTERVAL '18' YEAR
              AND t.show_explicit_content = 'N' );
-
-SELECT
-    *
-FROM
-    restricted_content
-WHERE
-    user_id = (
-        SELECT
-            id
-        FROM
-            app_user
-        WHERE
-            username = 'bob'
-    );
